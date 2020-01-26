@@ -20,4 +20,20 @@ class RPS
       0
     end
   end
+
+  def play(other)
+    if self > other
+      self
+    elsif other > self
+      other
+    else
+      false
+    end
+  end
 end
+# p RPS::COMBS
+# r1 = RPS.new('scissors')
+# r2 = RPS.new('rock')
+# # p r1 > r2
+# winner = r1.play r2
+# puts winner.move
