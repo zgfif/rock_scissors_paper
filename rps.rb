@@ -31,7 +31,7 @@ class RPS
     end
   end
 end
-# p RPS::COMBS
+p RPS::COMBS
 # r1 = RPS.new('scissors')
 # r2 = RPS.new('rock')
 # # p r1 > r2
