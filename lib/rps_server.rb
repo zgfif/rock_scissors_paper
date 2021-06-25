@@ -2,12 +2,15 @@
 
 require 'socket'
 require_relative 'rps.rb'
+
 threads = []
+
 server = TCPServer.new(3939)
 
 (1..2).each do |n|
-  conn = server.accept
-  threads << Thread.new(conn) do |cl|
+  conn = server.accept  # Wait for a client to connect
+
+  threads << Thread.new(conn) do |cl| # argument 'conn' is passed to the block
     Thread.current[:player] = cl
     Thread.current[:number] = n
     cl.puts "Hey Player #{n}. What's your name?"
