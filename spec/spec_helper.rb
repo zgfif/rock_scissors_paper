@@ -100,3 +100,9 @@ RSpec.configure do |config|
 end
 
 require_relative '../lib/rps'
+require_relative '../lib/rps_server'
+require 'helpers'
+
+RSpec.configure do |c|
+  c.include Helpers
+end
