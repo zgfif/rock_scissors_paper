@@ -4,9 +4,9 @@ require 'socket'
 require_relative 'rps.rb'
 
 class RPSServer
-  def initialize(port)
+  def initialize
     @threads = []
-    @server = TCPServer.new(port)
+    @server = TCPServer.new(3939)
   end
 
   def start
