@@ -1,4 +1,4 @@
 require_relative './lib/rps_server'
 
-server = RPSServer.new(3939)
+server = RPSServer.new
 server.start

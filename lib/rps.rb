@@ -2,7 +2,7 @@
 
 class RPS
   include Comparable
-
+  MOVES = %w[rock paper scissors].freeze
   COMBS = [%w[paper rock], %w[rock scissors], %w[scissors paper]].freeze
 
   attr_reader :move
@@ -13,9 +13,11 @@ class RPS
 
   # this method return winning object of class RPS
   def play(other)
-    if self > other
+    if (!MOVES.include?(move)) || (!MOVES.include?(other.move))
+      :invalid_move
+    elsif self > other
       self
-    elsif other > self
+    elsif self < other
       other
     else
       false

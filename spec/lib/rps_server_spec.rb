@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe 'rps server request' do
   it 'the paper should win rock' do
     threads = []
-    expected_message = 'The winner move is paper'
+    expected_message = 'The winning move is paper'
 
     threads << Thread.new { RPSServer.new.start }
 
@@ -19,7 +19,7 @@ RSpec.describe 'rps server request' do
   end
 
   it 'the rock should win scissors' do
-    expected_message = 'The winner move is rock'
+    expected_message = 'The winning move is rock'
     threads = []
 
     threads << Thread.new { RPSServer.new.start }
@@ -38,7 +38,7 @@ RSpec.describe 'rps server request' do
   end
 
   it 'the scissors should win paper' do
-    expected_message = 'The winner move is scissors'
+    expected_message = 'The winning move is scissors'
     threads = []
 
     threads << Thread.new { RPSServer.new.start }
@@ -57,7 +57,7 @@ RSpec.describe 'rps server request' do
   end
 
   it 'should be tie' do
-    expected_message = 'The winner move is Tie'
+    expected_message = 'Tie'
     threads = []
 
     threads << Thread.new { RPSServer.new.start }

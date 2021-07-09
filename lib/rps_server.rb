@@ -14,14 +14,14 @@ class RPSServer
 
     run_threads
 
-    process_winner
+    process_result
 
     send_result
   end
 
   private
 
-  attr_reader :server, :threads, :winner
+  attr_reader :server, :threads
 
   def build_threads
     (1..2).each do |n|
@@ -46,18 +46,25 @@ class RPSServer
     threads.each(&:join)
   end
 
-  def process_winner
+  def process_result
     player_1 = RPS.new(threads[0].fetch(:move, 'error'))
     player_2 = RPS.new(threads[1].fetch(:move, 'error'))
-    @winner = player_1.play(player_2)
+    @game_result = player_1.play(player_2)
   end
 
   def result
-    winner ? winner.move : 'Tie'
+    case @game_result
+    when :invalid_move
+      'Error: One of the users wrote invalid move'
+    when false
+      'Tie'
+    else
+      "The winning move is #{@game_result.move}"
+    end
   end
 
   def send_result
-    threads.each { |thr| thr[:player].puts "The winner move is #{result}" }
+    threads.each { |thr| thr[:player].puts result }
     server.close
   end
 end
