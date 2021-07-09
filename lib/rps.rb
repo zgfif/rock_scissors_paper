@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# this class is used to retrive game result: invalid_move, winning object or
+# false if tie
 class RPS
   include Comparable
   MOVES = %w[rock paper scissors].freeze
@@ -13,7 +15,7 @@ class RPS
 
   # this method return winning object of class RPS
   def play(other)
-    if (!MOVES.include?(move)) || (!MOVES.include?(other.move))
+    if !MOVES.include?(move) || !MOVES.include?(other.move)
       :invalid_move
     elsif self > other
       self
