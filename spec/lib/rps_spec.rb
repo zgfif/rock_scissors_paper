@@ -36,4 +36,9 @@ RSpec.describe RPS do
     player2 = RPS.new('rock')
     expect(player1.play(player2)).to be_falsey
   end
+  it 'rock against invalid move' do
+    player1 = RPS.new('rock')
+    player2 = RPS.new('invalid_move')
+    expect(player1.play(player2)).to be_falsey
+  end
 end

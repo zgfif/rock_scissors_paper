@@ -29,7 +29,7 @@ class RPS
       1
     elsif COMBS.include?([other.move, move])
       -1
-    elsif move == other.move
+    else
       0
     end
   end
