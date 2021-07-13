@@ -2,6 +2,7 @@
 
 require 'socket'
 require_relative 'rps'
+require_relative 'message'
 
 # This class is used to start playing server
 class RPSServer
@@ -12,12 +13,10 @@ class RPSServer
 
   def start
     build_threads
-
     run_threads
-
-    process_result
-
-    send_result
+    game_result
+    send_message
+    terminate_server
   end
 
   private
@@ -30,15 +29,15 @@ class RPSServer
 
       threads << Thread.new(conn) do |cl| # argument 'conn' is passed to the block, perform actions with client
         Thread.current[:player] = cl # create for current thread 'player' variable with value: corresponding client
-        cl.puts "Hey Player #{n}. What's your name?" # write to client 'Hey player...'
+        cl.puts Message.name_question(n) # write to client 'Hey player...'
         name = cl.gets.chomp # retrieve the string from client's terminal and set it to name variable
-        cl.puts "Hi. #{name}" # write to client  'Hi..*some_name*'
-        cl.print 'Please type your move (rock, scissors or paper): ' # write to client message 'Please...'
+        cl.puts Message.greeting(name) # write to client  'Hi..*some_name*'
+        cl.print Message.move_question # write to client message 'Please...'
         move = cl.gets.chomp
         Thread.current[:move] = move # create for current thread 'move'
         # variable wiht value: retrieved value from client's terminal
 
-        cl.puts 'Please wait...' # write to client terminal 'Please wait...'
+        cl.puts Message.please_wait # write to client terminal 'Please wait...'
       end
     end
   end
@@ -47,25 +46,38 @@ class RPSServer
     threads.each(&:join)
   end
 
-  def process_result
-    player1 = RPS.new(threads[0].fetch(:move, 'error'))
-    player2 = RPS.new(threads[1].fetch(:move, 'error'))
-    @game_result = player1.play(player2)
+  def game_result
+    @game_result ||= first_player.play(second_player)
   end
 
-  def result
-    case @game_result
+  def message
+    case game_result
     when :invalid_move
-      'Error: One of the users wrote invalid move'
+      Message.invalid_move
     when false
-      'Tie'
+      Message.tie
     else
-      "The winning move is #{@game_result.move}"
+      Message.win(game_result)
     end
   end
 
-  def send_result
-    threads.each { |thr| thr[:player].puts result }
+  def first_player
+    player(threads[0])
+  end
+
+  def second_player
+    player(threads[1])
+  end
+
+  def send_message
+    threads.each { |thr| thr[:player].puts message }
+  end
+
+  def terminate_server
     server.close
+  end
+
+  def player(thread)
+    RPS.new(thread.fetch(:move, 'error'))
   end
 end
