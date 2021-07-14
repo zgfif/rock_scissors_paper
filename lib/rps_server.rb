@@ -3,6 +3,7 @@
 require 'socket'
 require_relative 'rps'
 require_relative 'message'
+require_relative 'player_thread'
 
 # This class is used to start playing server
 class RPSServer
@@ -25,20 +26,7 @@ class RPSServer
 
   def build_threads
     (1..2).each do |n|
-      conn = server.accept # Wait for a client to connect
-
-      threads << Thread.new(conn) do |cl| # argument 'conn' is passed to the block, perform actions with client
-        Thread.current[:player] = cl # create for current thread 'player' variable with value: corresponding client
-        cl.puts Message.name_question(n) # write to client 'Hey player...'
-        name = cl.gets.chomp # retrieve the string from client's terminal and set it to name variable
-        cl.puts Message.greeting(name) # write to client  'Hi..*some_name*'
-        cl.print Message.move_question # write to client message 'Please...'
-        move = cl.gets.chomp
-        Thread.current[:move] = move # create for current thread 'move'
-        # variable wiht value: retrieved value from client's terminal
-
-        cl.puts Message.please_wait # write to client terminal 'Please wait...'
-      end
+      threads << PlayerThread.new(server.accept, n).build
     end
   end
 
@@ -78,6 +66,6 @@ class RPSServer
   end
 
   def player(thread)
-    RPS.new(thread.fetch(:move, 'error'))
+    RPS.new(thread[:move])
   end
 end
